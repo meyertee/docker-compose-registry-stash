@@ -1,0 +1,29 @@
+registry:
+  image: registry
+  environment:
+    - STORAGE_PATH=/registry
+    - GUNICORN_OPTS=[--preload]
+  volumes:
+    - /volumes/registry:/registry
+  ports: 
+    - "5000:5000"
+stashdb:
+  image: postgres
+  environment:
+    - POSTGRES_USER=stashdb
+    - POSTGRES_PASSWORD=jGpm4vZaZwLXYdeVHQvTNu7PWBCE
+  volumes:
+    - /volumes/stashdb:/var/lib/postgresql/data
+stash:
+  image: atlassian/stash
+  links:
+    - stashdb:db
+  user: root
+  environment:
+    - STORAGE_PATH=/var/atlassian/application-data/stash
+    - RUN_USER=root
+    - RUN_GROUP=root
+  volumes:
+    - /volumes/stash:/var/atlassian/application-data/stash
+  ports:
+    - "7990:7990"
